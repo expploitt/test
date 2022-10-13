@@ -1,8 +1,4 @@
-//
-// type ObjectResult = Result<T, MyError>;
-//
-//
-// #[derive(Debug, Clone, Copy)]
-// pub enum MyError {
-//
-// }
+
+use crate::error::MyError;
+
+pub type ObjectResult<T> = Result<T, MyError>;

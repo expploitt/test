@@ -12,6 +12,8 @@
 use std::fmt::{Display, Formatter};
 use std::io::{self, Read, Write};
 
+use crate::result::ObjectResult;
+
 pub mod error;
 pub mod result;
 
@@ -21,6 +23,18 @@ struct Object {
     values: Vec<String>,
 }
 
+impl Display for Object {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        for (i, v) in self.values.iter().enumerate() {
+            if i > 0 { write!(f, ",")?; }
+            write!(f, "{}", v.trim_end())?;
+        }
+        write!(f, "]")?;
+        Ok(())
+    }
+}
+
 impl Object {
     pub fn new() -> Self {
         Object { values: vec!() }
@@ -28,19 +42,21 @@ impl Object {
 }
 
 
-fn main() {
+fn main() -> ObjectResult<()> {
     let mut object = Object::new();
 
     loop {
         let mut input = String::new();
         // stdin.read_line(&mut input);
         print!("Enter a new value: ");
-        io::stdout().flush().unwrap();
+        io::stdout().flush()?;
         {
-            std::io::stdin().read_line(&mut input).unwrap();
+            std::io::stdin().read_line(&mut input)?;
         }
-        input.trim_end();
-        object.values.push(input);
-        println!("\n Returns: {:?}", object.values);
+
+        if input != "" && input != "\n" {
+            object.values.push(input);
+            println!("\n Returns: {}", object);
+        }
     }
 }
